@@ -40,7 +40,7 @@ requires-python = ">=3.10"
 
 dependencies = [
     "dishka>=1.7,<2",
-    "flet>=0.80.0",
+    "flet[all]<0.80.0",
 ]
 
 [project.urls]
