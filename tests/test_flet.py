@@ -52,7 +52,7 @@ async def dishka_page(
     event = MockControlEvent(page)
 
     container = make_async_container(provider)
-    setup_dishka(container, page=page)  # type: ignore[arg-type]
+    setup_dishka(container, page=page)  # type: ignore[arg-type,unused-ignore]
 
     yield page, event
 
@@ -72,7 +72,7 @@ async def handler_with_app(
 async def test_app_dependency(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, event):
         handler = inject(handler_with_app)
-        result = await handler(event)
+        result = await handler(event)  # type: ignore[call-arg]
 
         assert result == "passed"
         app_provider.mock.assert_called_with(APP_DEP_VALUE)
@@ -93,7 +93,7 @@ async def handler_with_request(
 async def test_request_dependency(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, event):
         handler = inject(handler_with_request)
-        result = await handler(event)
+        result = await handler(event)  # type: ignore[call-arg]
 
         assert result == "passed"
         app_provider.mock.assert_called_with(REQUEST_DEP_VALUE)
@@ -113,7 +113,7 @@ async def handler_with_event_as_kwarg(
 async def test_event_as_kwarg(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, event):
         handler = inject(handler_with_event_as_kwarg)
-        result = await handler(event=event)
+        result = await handler(event=event)  # type: ignore[call-arg]
 
         assert result == "passed"
         app_provider.mock.assert_called_with(APP_DEP_VALUE)
@@ -132,7 +132,7 @@ async def handler_with_event_as_first_arg(
 async def test_event_as_first_arg(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, event):
         handler = inject(handler_with_event_as_first_arg)
-        result = await handler(event)
+        result = await handler(event)  # type: ignore[call-arg]
 
         assert result == "passed"
         app_provider.mock.assert_called_with(APP_DEP_VALUE)
@@ -152,7 +152,7 @@ async def handler_with_event_in_kwargs(
 async def test_event_in_kwargs_values(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, event):
         handler = inject(handler_with_event_in_kwargs)
-        result = await handler("test", some_other_param=event)
+        result = await handler("test", some_other_param=event)  # type: ignore[call-arg]
 
         assert result == "passed"
         app_provider.mock.assert_called_with(APP_DEP_VALUE)
@@ -164,7 +164,7 @@ async def test_missing_event_raises_error(app_provider: AppProvider) -> None:
         handler = inject(handler_with_app)
 
         with pytest.raises(ValueError, match="Cannot find event with page attribute"):
-            await handler("not_an_event")
+            await handler("not_an_event")  # type: ignore[call-arg]
 
 
 @pytest.mark.asyncio()
@@ -181,7 +181,7 @@ async def test_missing_container_raises_error() -> None:
     handler = inject(handler_without_setup)
 
     with pytest.raises(ValueError, match="Container not found"):
-        await handler(event)
+        await handler(event)  # type: ignore[call-arg]
 
 
 @pytest.mark.asyncio()
@@ -191,7 +191,7 @@ async def test_setup_dishka_stores_container(
     page = MockPage()
     container = make_async_container(app_provider)
 
-    setup_dishka(container, page=page)  # type: ignore[arg-type]
+    setup_dishka(container, page=page)  # type: ignore[arg-type,unused-ignore]
 
     stored_container = page.session.get("dishka_container")
     assert stored_container is container
