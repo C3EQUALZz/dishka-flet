@@ -37,7 +37,7 @@ from dishka_flet import (
 from dishka import make_async_container, Provider, provide, Scope
 ```
 
-2. Create provider. You can use `faststream.types.StreamMessage` and `faststream.ContextRepo` as a factory parameter to access on *REQUEST*-scope
+2. Create provider like here below
 
 ```python
 class MyProvider(Provider):
