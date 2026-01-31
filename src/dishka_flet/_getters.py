@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, cast
 
 from dishka import AsyncContainer
+from dishka.exception_base import DishkaError
 
 from dishka_flet._consts import CONTAINER_NAME, FLET_028_VERSION, FLET_CURRENT_VERSION
 
@@ -30,7 +31,7 @@ def get_container_from_args_kwargs(
             "Cannot find event with page attribute. "
             "Make sure your function receives an event parameter (e.g., ControlEvent)."
         )
-        raise ValueError(msg)
+        raise DishkaError(msg)
 
     page: flet.Page = cast("flet.Page", event.page)
     container: AsyncContainer | None
@@ -45,6 +46,6 @@ def get_container_from_args_kwargs(
             f"Container not found in page.session['{CONTAINER_NAME}']. "
             "Make sure you called setup_dishka() before using inject()."
         )
-        raise ValueError(msg)
+        raise DishkaError(msg)
 
     return container

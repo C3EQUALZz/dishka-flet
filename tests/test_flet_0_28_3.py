@@ -6,6 +6,7 @@ from unittest.mock import Mock
 
 import pytest
 from dishka import make_async_container
+from dishka.exception_base import DishkaError
 from flet import ControlEvent
 from packaging import version
 
@@ -171,7 +172,7 @@ async def test_missing_event_raises_error(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, _event):
         handler = inject(handler_with_app)
 
-        with pytest.raises(ValueError, match="Cannot find event with page attribute"):
+        with pytest.raises(DishkaError, match="Cannot find event with page attribute"):
             await handler("not_an_event")
 
 
@@ -188,7 +189,7 @@ async def test_missing_container_raises_error() -> None:
 
     handler = inject(handler_without_setup)
 
-    with pytest.raises(ValueError, match="Container not found"):
+    with pytest.raises(DishkaError, match="Container not found"):
         await handler(event)
 
 
