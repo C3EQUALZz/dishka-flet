@@ -8,6 +8,7 @@ Though it is not required, you can use *dishka-flet* integration. It features:
 
 * *REQUEST* scope management using sessions
 * *APP* scope management using sessions
+* *FletProvider* for working with `Page` in container
 
 You need to specify `@inject` manually.
 
