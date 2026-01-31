@@ -34,7 +34,7 @@ def get_page_from_args_kwargs(
     return cast("flet.Page", event.page)
 
 
-def get_container_from_event(
+def get_container_from_page(
     page: flet.Page,
 ) -> AsyncContainer | Container:
     container: AsyncContainer | Container | None
@@ -60,7 +60,7 @@ def get_async_container_from_args_kwargs(
 ) -> AsyncContainer:
     page: flet.Page = get_page_from_args_kwargs(args, kwargs)
 
-    container: AsyncContainer | Container = get_container_from_event(page)
+    container: AsyncContainer | Container = get_container_from_page(page)
 
     if not isinstance(container, AsyncContainer):
         msg = f"Expected AsyncContainer in request_state for key '{CONTAINER_NAME}'."
@@ -75,7 +75,7 @@ def get_sync_container_from_args_kwargs(
 ) -> Container:
     page: flet.Page = get_page_from_args_kwargs(args, kwargs)
 
-    container: AsyncContainer | Container = get_container_from_event(page=page)
+    container: AsyncContainer | Container = get_container_from_page(page=page)
 
     if not isinstance(container, Container):
         msg = f"Expected Container in request_state for key '{CONTAINER_NAME}'."
