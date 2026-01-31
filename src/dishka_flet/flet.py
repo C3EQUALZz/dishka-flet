@@ -2,12 +2,13 @@ __all__ = ("inject", "setup_dishka")
 
 import inspect
 from collections.abc import Awaitable, Callable
-from typing import Any, Final, overload
+from typing import Any, overload
 
 import flet
 from dishka import AsyncContainer, Container
 
 from dishka_flet._consts import (
+    CONTAINER_NAME,
     FLET_028_VERSION,
     FLET_080_VERSION,
     FLET_CURRENT_VERSION,
@@ -15,8 +16,6 @@ from dishka_flet._consts import (
     ReturnT,
 )
 from dishka_flet._injectors import inject_async, inject_sync
-
-CONTAINER_NAME: Final[str] = "dishka_container"
 
 
 @overload
@@ -32,14 +31,6 @@ def inject(
 def inject(
     func: Callable[ParamsP, Any],
 ) -> Any:
-    """Inject dependencies into a function using dishka.
-
-    This decorator removes parameters annotated with FromDishka from the
-    function signature, injecting them automatically at runtime.
-
-    Note: The return type uses overload to preserve type information.
-    At runtime, parameters with FromDishka annotations are removed.
-    """
     # BaseControl is only available in flet 0.80.0 and above
     if FLET_CURRENT_VERSION >= FLET_080_VERSION and "BaseControl" not in func.__globals__:
         func.__globals__["BaseControl"] = flet.BaseControl
