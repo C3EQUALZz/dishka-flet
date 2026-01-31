@@ -2,7 +2,7 @@ from typing import Any
 from unittest.mock import Mock
 
 import pytest
-from dishka import make_async_container
+from dishka import make_async_container, make_container
 from dishka.exception_base import DishkaError
 from flet import ControlEvent
 
@@ -167,3 +167,49 @@ async def test_setup_dishka_stores_container(
 
     assert stored_container is container
     await container.close()
+
+
+@pytest.mark.asyncio()
+async def test_async_handler_with_sync_container_raises(
+    app_provider: AppProvider,
+) -> None:
+    """Test that async handler raises error when sync container is used."""
+    page = MockPage()
+    sync_container = make_container(app_provider)
+    setup_dishka(sync_container, page=page)  # type: ignore[arg-type]
+
+    @inject
+    async def async_handler(
+        event: ControlEvent,  # noqa: ARG001
+        _a: FromDishka[AppDep],
+    ) -> str:
+        return "passed"
+
+    event = MockControlEvent(page)
+
+    with pytest.raises(DishkaError, match="Expected AsyncContainer"):
+        await async_handler(event)
+
+
+@pytest.mark.asyncio()
+async def test_sync_handler_with_async_container_raises(
+    app_provider: AppProvider,
+) -> None:
+    """Test that sync handler raises error when async container is used."""
+    page = MockPage()
+    async_container = make_async_container(app_provider)
+    setup_dishka(async_container, page=page)  # type: ignore[arg-type]
+
+    @inject
+    def sync_handler(
+        event: ControlEvent,  # noqa: ARG001
+        _a: FromDishka[AppDep],
+    ) -> str:
+        return "passed"
+
+    event = MockControlEvent(page)
+
+    with pytest.raises(DishkaError, match="Expected Container"):
+        sync_handler(event)
+
+    await async_container.close()

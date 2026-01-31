@@ -63,7 +63,7 @@ def get_async_container_from_args_kwargs(
     container: AsyncContainer | Container = get_container_from_page(page)
 
     if not isinstance(container, AsyncContainer):
-        msg = f"Expected AsyncContainer in request_state for key '{CONTAINER_NAME}'."
+        msg = "Expected AsyncContainer"
         raise DishkaError(msg)
 
     return container
@@ -78,7 +78,7 @@ def get_sync_container_from_args_kwargs(
     container: AsyncContainer | Container = get_container_from_page(page=page)
 
     if not isinstance(container, Container):
-        msg = f"Expected Container in request_state for key '{CONTAINER_NAME}'."
+        msg = "Expected Container"
         raise DishkaError(msg)
 
     return container
