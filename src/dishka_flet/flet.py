@@ -3,17 +3,25 @@ __all__ = ("inject", "setup_dishka")
 from collections.abc import Callable
 from typing import Any, Final, ParamSpec, TypeVar, cast
 
+import flet
 from dishka import AsyncContainer, Container
 from dishka.integrations.base import wrap_injection
-from flet import ControlEvent, Page
+from flet import BaseControl, ControlEvent, Page
+from packaging import version
 
 _ReturnT = TypeVar("_ReturnT")
 _ParamsP = ParamSpec("_ParamsP")
 
 CONTAINER_NAME: Final[str] = "dishka_container"
 
+FLET_CURRENT_VERSION: Final[version.Version] = version.parse(flet.__version__)
+FLET_028_VERSION: Final[version.Version] = version.parse("0.28.3")
 
-def inject(func: Callable[_ParamsP, _ReturnT]) -> Callable[_ParamsP, _ReturnT]:
+
+def inject(func: Callable[_ParamsP, _ReturnT]) -> Callable[..., _ReturnT]:
+    if FLET_CURRENT_VERSION >= FLET_028_VERSION and "BaseControl" not in func.__globals__:
+        func.__globals__["BaseControl"] = BaseControl
+
     return wrap_injection(
         func=func,
         container_getter=_get_container_from_args_kwargs,
@@ -48,8 +56,12 @@ def _get_container_from_args_kwargs(
         raise ValueError(msg)
 
     page: Page = cast("Page", event.page)
+    container: AsyncContainer | None
 
-    container: AsyncContainer | None = page.session.get(CONTAINER_NAME)
+    if flet.__version__ <= "0.28.3":
+        container = page.session.get(CONTAINER_NAME)  # type: ignore[attr-defined]
+    else:
+        container = page.session.store.get(CONTAINER_NAME)
 
     if container is None:
         msg = (
@@ -65,4 +77,7 @@ def setup_dishka(
     container: AsyncContainer | Container,
     page: Page,
 ) -> None:
-    page.session.set(CONTAINER_NAME, container)
+    if FLET_CURRENT_VERSION <= FLET_028_VERSION:
+        page.session.set(CONTAINER_NAME, container)  # type: ignore[attr-defined]
+    else:
+        page.session.store.set(CONTAINER_NAME, container)
