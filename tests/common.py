@@ -94,11 +94,8 @@ class MockSession:
 
     def __init__(self) -> None:
         self._data: dict[str, Any] = {}
-        # For flet 0.80+, use store attribute
         if FLET_CURRENT_VERSION >= FLET_080_VERSION:
             self.store = MockStore()
-        # For flet <= 0.28.3, use direct get/set methods
-        # (methods are defined below)
 
     def get(self, key: str) -> Any:
         """Get value from session (for flet <= 0.28.3)."""

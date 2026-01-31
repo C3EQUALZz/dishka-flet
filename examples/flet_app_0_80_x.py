@@ -3,11 +3,11 @@ import random
 import flet as ft
 from dishka import Provider, Scope, make_async_container, provide
 
-from dishka_flet import FromDishka, inject, setup_dishka
+from dishka_flet import FromDishka, inject, setup_dishka, FletProvider
 
 
 class GreetingService:
-    def __init__(self, name: str = "World") -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
 
     def greet(self) -> str:
@@ -25,7 +25,8 @@ class CounterService:
 
 class MyProvider(Provider):
     @provide(scope=Scope.REQUEST)
-    def get_greeting_service(self) -> GreetingService:
+    def get_greeting_service(self, page: ft.Page) -> GreetingService:
+        print(page.session.id)
         return GreetingService(name=f"Dishka User with random number {random.randint(1, 100)}")
 
     @provide(scope=Scope.APP)
@@ -53,7 +54,7 @@ async def main(page: ft.Page) -> None:
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     provider = MyProvider()
-    container = make_async_container(provider)
+    container = make_async_container(provider, FletProvider())
     setup_dishka(container, page=page)
 
     text = ft.Text("Click the button!", size=20)

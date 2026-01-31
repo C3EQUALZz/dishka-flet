@@ -5,6 +5,7 @@ from dishka.integrations.base import wrap_injection
 from dishka_flet._consts import ParamsP, ReturnT
 from dishka_flet._getters import (
     get_async_container_from_args_kwargs,
+    get_context_from_args_kwargs,
     get_sync_container_from_args_kwargs,
 )
 
@@ -18,6 +19,7 @@ def inject_async(
         remove_depends=True,
         is_async=True,
         manage_scope=True,
+        provide_context=get_context_from_args_kwargs,
     )
 
 
@@ -28,4 +30,5 @@ def inject_sync(func: Callable[ParamsP, ReturnT]) -> Callable[..., ReturnT]:
         remove_depends=True,
         is_async=False,
         manage_scope=True,
+        provide_context=get_context_from_args_kwargs,
     )

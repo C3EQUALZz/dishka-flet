@@ -82,3 +82,14 @@ def get_sync_container_from_args_kwargs(
         raise DishkaError(msg)
 
     return container
+
+
+def get_context_from_args_kwargs(
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> dict[Any, Any]:
+    page: flet.Page = get_page_from_args_kwargs(args, kwargs)
+
+    return {
+        flet.Page: page,
+    }

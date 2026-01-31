@@ -1,11 +1,11 @@
-__all__ = ("inject", "setup_dishka")
+__all__ = ("FletProvider", "inject", "setup_dishka")
 
 import inspect
 from collections.abc import Awaitable, Callable
 from typing import Any, overload
 
 import flet
-from dishka import AsyncContainer, Container
+from dishka import AsyncContainer, Container, Provider, Scope, from_context
 
 from dishka_flet._consts import (
     CONTAINER_NAME,
@@ -16,6 +16,10 @@ from dishka_flet._consts import (
     ReturnT,
 )
 from dishka_flet._injectors import inject_async, inject_sync
+
+
+class FletProvider(Provider):
+    page = from_context(flet.Page, scope=Scope.REQUEST)
 
 
 @overload

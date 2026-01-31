@@ -1,4 +1,5 @@
 __all__ = (
+    "FletProvider",
     "FromDishka",
     "inject",
     "setup_dishka",
@@ -6,7 +7,4 @@ __all__ = (
 
 from dishka import FromDishka
 
-from .flet import (
-    inject,
-    setup_dishka,
-)
+from .flet import FletProvider, inject, setup_dishka
