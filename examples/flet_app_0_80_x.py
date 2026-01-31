@@ -1,3 +1,5 @@
+import random
+
 import flet as ft
 from dishka import Provider, Scope, make_async_container, provide
 
@@ -24,7 +26,7 @@ class CounterService:
 class MyProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_greeting_service(self) -> GreetingService:
-        return GreetingService(name="Dishka User")
+        return GreetingService(name=f"Dishka User with random number {random.randint(1, 100)}")
 
     @provide(scope=Scope.APP)
     def get_counter_service(self) -> CounterService:
