@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from typing import Any
 from unittest.mock import Mock
 
-import flet
 import pytest
 from dishka import make_async_container
 from flet import ControlEvent
@@ -15,6 +14,7 @@ from dishka_flet import (
     inject,
     setup_dishka,
 )
+from dishka_flet._consts import get_current_flet_library_version
 
 from .common import (
     APP_DEP_VALUE,
@@ -26,7 +26,7 @@ from .common import (
 
 # Skip all tests in this file if flet version is less than 0.80.0
 pytestmark = pytest.mark.skipif(
-    version.parse(flet.__version__) < version.parse("0.80.0"),
+    get_current_flet_library_version() < version.parse("0.80.0"),
     reason="These tests are only for flet versions 0.80.0 and above",
 )
 

@@ -615,7 +615,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "dishka", specifier = ">=1.7,<2" },
-    { name = "flet", extras = ["all"], specifier = ">=0.80.0" },
+    { name = "flet", extras = ["all"], specifier = ">=0.28.3" },
 ]
 
 [package.metadata.requires-dev]

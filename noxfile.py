@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 import nox
 
 
@@ -6,8 +8,24 @@ nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = True
 
 
-PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 DISHKA_VERSIONS = ["1.7.0", None]
+PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+
+@dataclass(frozen=True, slots=True)
+class IntegrationEnv:
+    library: str
+    version: str
+
+    def get_version(self) -> str:
+        """Return version string for installation."""
+        return self.version
+
+
+FLET_ENVS = [
+    *[(IntegrationEnv("flet", "0.28.3"), py_version) for py_version in PYTHON_VERSIONS],
+    *[(IntegrationEnv("flet", "latest"), py_version) for py_version in PYTHON_VERSIONS],
+]
 
 
 def install_command(dependency: str, version: str | None = None) -> str:
@@ -22,15 +40,21 @@ def load_test_dependencies() -> list[str]:
 
 
 @nox.session()
-@nox.parametrize("python", PYTHON_VERSIONS)
+@nox.parametrize("flet_env,python", FLET_ENVS)
 @nox.parametrize("dishka_version", DISHKA_VERSIONS)
 def tests(
     session: nox.Session,
-    python: str,
+    flet_env: IntegrationEnv,
     dishka_version: str | None,
 ) -> None:
-    """Run tests with different versions of Python and dependencies."""
+    """Run tests with different versions of dependencies."""
     session.install(install_command("dishka", dishka_version))
+
+    # Install flet version
+    if flet_env.version == "latest":
+        session.install("flet[all]")
+    else:
+        session.install(f"flet[all]=={flet_env.version}")
 
     dev_deps = load_test_dependencies()
     session.install(*dev_deps)
