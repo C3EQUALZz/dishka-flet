@@ -1,18 +1,16 @@
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
-from dishka import AsyncContainer
+import flet
+from dishka import AsyncContainer, Container
 from dishka.exception_base import DishkaError
 
 from dishka_flet._consts import CONTAINER_NAME, FLET_028_VERSION, FLET_CURRENT_VERSION
 
-if TYPE_CHECKING:
-    import flet
 
-
-def get_container_from_args_kwargs(
+def get_page_from_args_kwargs(
     args: tuple[Any, ...],
     kwargs: dict[str, Any],
-) -> AsyncContainer:
+) -> flet.Page:
     event: flet.ControlEvent | None = kwargs.get("event")
 
     if event is None and args:
@@ -33,8 +31,13 @@ def get_container_from_args_kwargs(
         )
         raise DishkaError(msg)
 
-    page: flet.Page = cast("flet.Page", event.page)
-    container: AsyncContainer | None
+    return cast("flet.Page", event.page)
+
+
+def get_container_from_event(
+    page: flet.Page,
+) -> AsyncContainer | Container:
+    container: AsyncContainer | Container | None
 
     if FLET_CURRENT_VERSION <= FLET_028_VERSION:
         container = page.session.get(CONTAINER_NAME)  # type: ignore[attr-defined]
@@ -46,6 +49,36 @@ def get_container_from_args_kwargs(
             f"Container not found in page.session['{CONTAINER_NAME}']. "
             "Make sure you called setup_dishka() before using inject()."
         )
+        raise DishkaError(msg)
+
+    return container
+
+
+def get_async_container_from_args_kwargs(
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> AsyncContainer:
+    page: flet.Page = get_page_from_args_kwargs(args, kwargs)
+
+    container: AsyncContainer | Container = get_container_from_event(page)
+
+    if not isinstance(container, AsyncContainer):
+        msg = f"Expected AsyncContainer in request_state for key '{CONTAINER_NAME}'."
+        raise DishkaError(msg)
+
+    return container
+
+
+def get_sync_container_from_args_kwargs(
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> Container:
+    page: flet.Page = get_page_from_args_kwargs(args, kwargs)
+
+    container: AsyncContainer | Container = get_container_from_event(page=page)
+
+    if not isinstance(container, Container):
+        msg = f"Expected Container in request_state for key '{CONTAINER_NAME}'."
         raise DishkaError(msg)
 
     return container

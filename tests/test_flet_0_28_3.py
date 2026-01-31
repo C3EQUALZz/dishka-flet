@@ -161,7 +161,7 @@ async def handler_with_event_in_kwargs(
 async def test_event_in_kwargs_values(app_provider: AppProvider) -> None:
     async with dishka_page(app_provider) as (_page, event):
         handler = inject(handler_with_event_in_kwargs)
-        result = await handler("test", some_other_param=event)
+        result = await handler("test", some_other_param=event)  # type: ignore[no-untyped-call]
 
         assert result == "passed"
         app_provider.mock.assert_called_with(APP_DEP_VALUE)
