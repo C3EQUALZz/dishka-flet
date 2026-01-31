@@ -1,12 +1,13 @@
 # Flet integration for Dishka
 
-[![Downloads](https://static.pepy.tech/personalized-badge/dishka-flet?period=month&units=international_system&left_color=grey&right_color=green&left_text=downloads/month)](https://www.pepy.tech/projects/dishka-faststream)
+[![Downloads](https://static.pepy.tech/personalized-badge/dishka-flet?period=month&units=international_system&left_color=grey&right_color=green&left_text=downloads/month)](https://www.pepy.tech/projects/dishka-flet)
 [![Package version](https://img.shields.io/pypi/v/dishka-flet?label=PyPI)](https://pypi.org/project/dishka-flet)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/dishka-faststream.svg)](https://pypi.org/project/dishka-flet)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/dishka-flet.svg)](https://pypi.org/project/dishka-flet)
 
 Though it is not required, you can use *dishka-flet* integration. It features:
 
 * *REQUEST* scope management using sessions
+* *APP* scope management using sessions
 
 You need to specify `@inject` manually.
 
