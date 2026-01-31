@@ -1,6 +1,3 @@
-from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
-from dataclasses import dataclass
 from typing import Any
 from unittest.mock import Mock
 
@@ -8,64 +5,25 @@ import pytest
 from dishka import make_async_container
 from dishka.exception_base import DishkaError
 from flet import ControlEvent
-from packaging import version
 
 from dishka_flet import (
     FromDishka,
     inject,
     setup_dishka,
 )
-from dishka_flet._consts import get_current_flet_library_version
 
 from .common import (
     APP_DEP_VALUE,
+    FLET_028_VERSION,
     REQUEST_DEP_VALUE,
     AppDep,
     AppProvider,
+    MockControlEvent,
+    MockPage,
     RequestDep,
+    dishka_page,
+    get_current_flet_library_version,
 )
-
-# Skip all tests in this file if flet version is greater than 0.28.3
-pytestmark = pytest.mark.skipif(
-    get_current_flet_library_version() > version.parse("0.28.3"),
-    reason="These tests are only for flet versions 0.28.3 and below",
-)
-
-
-class MockSession:
-    def __init__(self) -> None:
-        self._data: dict[str, Any] = {}
-
-    def get(self, key: str) -> Any:
-        return self._data.get(key)
-
-    def set(self, key: str, value: Any) -> None:
-        self._data[key] = value
-
-
-class MockPage:
-    def __init__(self) -> None:
-        self.session = MockSession()
-
-
-@dataclass
-class MockControlEvent:
-    page: MockPage
-
-
-@asynccontextmanager
-async def dishka_page(
-    provider: AppProvider,
-) -> AsyncIterator[tuple[MockPage, MockControlEvent]]:
-    page = MockPage()
-    event = MockControlEvent(page)
-
-    container = make_async_container(provider)
-    setup_dishka(container, page=page)  # type: ignore[arg-type,unused-ignore]
-
-    yield page, event
-
-    await container.close()
 
 
 async def handler_with_app(
@@ -202,7 +160,10 @@ async def test_setup_dishka_stores_container(
 
     setup_dishka(container, page=page)  # type: ignore[arg-type,unused-ignore]
 
-    stored_container = page.session.get("dishka_container")
-    assert stored_container is container
+    if get_current_flet_library_version() == FLET_028_VERSION:
+        stored_container = page.session.get("dishka_container")
+    else:
+        stored_container = page.session.store.get("dishka_container")
 
+    assert stored_container is container
     await container.close()
