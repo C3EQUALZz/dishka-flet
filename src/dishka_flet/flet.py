@@ -10,7 +10,6 @@ from dishka import AsyncContainer, Container, Provider, Scope, from_context
 from dishka_flet._consts import (
     CONTAINER_NAME,
     FLET_028_VERSION,
-    FLET_080_VERSION,
     FLET_CURRENT_VERSION,
     ParamsP,
     ReturnT,
@@ -34,11 +33,7 @@ def inject(
 
 def inject(
     func: Callable[ParamsP, Any],
-) -> Any:
-    # BaseControl is only available in flet 0.80.0 and above
-    if FLET_CURRENT_VERSION >= FLET_080_VERSION and "BaseControl" not in func.__globals__:
-        func.__globals__["BaseControl"] = flet.BaseControl
-
+) -> Callable[..., Any]:
     if inspect.iscoroutinefunction(func):
         return inject_async(func)
 
