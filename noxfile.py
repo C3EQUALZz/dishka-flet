@@ -8,7 +8,7 @@ nox.options.reuse_existing_virtualenvs = True
 nox.options.stop_on_first_error = True
 
 
-DISHKA_VERSIONS = ["1.7.0", None]
+DISHKA_VERSIONS = ["1.7.0", "1.7.1", "1.7.2"]
 PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
 
