@@ -1,4 +1,7 @@
-from importlib.metadata import version as get_package_version
+from importlib.metadata import (
+    PackageNotFoundError,
+    version as get_package_version,
+)
 from typing import Final, ParamSpec, TypeVar
 
 import flet
@@ -9,7 +12,10 @@ def get_current_flet_library_version() -> version.Version:
     flet_version = getattr(flet, "__version__", None)
     if flet_version:
         return version.parse(flet_version)
-    return version.parse(get_package_version("flet"))
+    try:
+        return version.parse(get_package_version("flet"))
+    except PackageNotFoundError:
+        return version.parse("0.28.3")
 
 
 ReturnT = TypeVar("ReturnT")
