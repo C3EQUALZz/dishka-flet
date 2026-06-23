@@ -131,6 +131,7 @@ async def dishka_page(
     container = make_async_container(provider)
     setup_dishka(container, page=page)  # type: ignore[arg-type]
 
-    yield page, event
-
-    await container.close()
+    try:
+        yield page, event
+    finally:
+        await container.close()
