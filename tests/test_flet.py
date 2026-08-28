@@ -27,7 +27,7 @@ from .common import (
 
 
 async def handler_with_app(
-    event: ControlEvent,  # noqa: ARG001
+    event: ControlEvent,  # ruff: ignore[unused-function-argument]
     a: FromDishka[AppDep],
     mock: FromDishka[Mock],
 ) -> str:
@@ -48,7 +48,7 @@ async def test_app_dependency(app_provider: AppProvider) -> None:
 
 
 async def handler_with_request(
-    event: ControlEvent,  # noqa: ARG001
+    event: ControlEvent,  # ruff: ignore[unused-function-argument]
     a: FromDishka[RequestDep],
     mock: FromDishka[Mock],
 ) -> str:
@@ -68,7 +68,7 @@ async def test_request_dependency(app_provider: AppProvider) -> None:
 
 
 async def handler_with_event_as_kwarg(
-    event: ControlEvent,  # noqa: ARG001
+    event: ControlEvent,  # ruff: ignore[unused-function-argument]
     a: FromDishka[AppDep],
     mock: FromDishka[Mock],
 ) -> str:
@@ -87,7 +87,7 @@ async def test_event_as_kwarg(app_provider: AppProvider) -> None:
 
 
 async def handler_with_event_as_first_arg(
-    event: ControlEvent,  # noqa: ARG001
+    event: ControlEvent,  # ruff: ignore[unused-function-argument]
     a: FromDishka[AppDep],
     mock: FromDishka[Mock],
 ) -> str:
@@ -109,7 +109,7 @@ async def handler_with_event_in_kwargs(
     _some_param: str,
     a: FromDishka[AppDep],
     mock: FromDishka[Mock],
-    **kwargs: Any,  # noqa: ARG001
+    **kwargs: Any,  # ruff: ignore[unused-function-argument]
 ) -> str:
     mock(a)
     return "passed"
@@ -180,7 +180,7 @@ async def test_async_handler_with_sync_container_raises(
 
     @inject
     async def async_handler(
-        event: ControlEvent,  # noqa: ARG001
+        event: ControlEvent,  # ruff: ignore[unused-function-argument]
         _a: FromDishka[AppDep],
     ) -> str:
         return "passed"
@@ -202,7 +202,7 @@ async def test_sync_handler_with_async_container_raises(
 
     @inject
     def sync_handler(
-        event: ControlEvent,  # noqa: ARG001
+        event: ControlEvent,  # ruff: ignore[unused-function-argument]
         _a: FromDishka[AppDep],
     ) -> str:
         return "passed"
