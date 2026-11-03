@@ -1,4 +1,4 @@
-from collections.abc import AsyncIterator, Iterable
+from collections.abc import AsyncGenerator, Iterable
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from importlib.metadata import version as get_package_version
@@ -123,7 +123,7 @@ class MockControlEvent:
 @asynccontextmanager
 async def dishka_page(
     provider: AppProvider,
-) -> AsyncIterator[tuple[MockPage, MockControlEvent]]:
+) -> AsyncGenerator[tuple[MockPage, MockControlEvent], None]:
     """Context manager for setting up dishka with a mock page."""
     page = MockPage()
     event = MockControlEvent(page)
